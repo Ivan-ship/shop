@@ -1,8 +1,9 @@
 from fastapi import APIRouter
-from database.model import CreateUser
-from database.db import async_session
-from database.shema import Users
+from server.database.model import CreateUser
+from server.database.db import async_session
+from server.database.shema import Users
 from sqlalchemy import select
+from server.utils.jwt_handler import jwt_handler
 
 
 router = APIRouter()
@@ -28,3 +29,17 @@ async def create_user(user_data: CreateUser):
             session.add(user)
             await session.commit()
             await session.refresh(user)
+
+            token = await jwt_handler.generate_access_token(
+                user.telegram_id
+            )
+            return {
+                "access_token": token,
+                "token_type": "bearer",
+                "user": {
+                    "id": user.user_id,
+                    "username": user.username,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                }
+            }

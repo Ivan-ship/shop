@@ -1,9 +1,14 @@
 import aiohttp
+import os
+from dotenv import load_dotenv
 from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
 router = Router()
+
+load_dotenv()
+API_URL = os.getenv("API_URL")
 
 @router.message(CommandStart())
 async def command_start(message: Message):
@@ -18,7 +23,7 @@ async def command_start(message: Message):
 
     async with aiohttp.ClientSession() as session:
         async with session.post(
-            "http://127.0.0.1:8000/user/register",
+            f"{API_URL}/user/register",
             json=data
         ) as response:
             res = await response.json()
