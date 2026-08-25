@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from aiogram import Router, F
 from aiogram.filters import CommandStart
 from aiogram.types import Message, CallbackQuery
-from bot.keyboard.keyboard import hello_button
+from bot.keyboard.keyboard import hello_button, info_button
 
 router = Router()
 
@@ -48,4 +48,5 @@ async def start_bot(callback: CallbackQuery):
             json=data
         ) as response:
             res = await response.json()
-    await callback.message.answer(f"Привет {telegram_user.first_name} я бот")
+    await callback.message.answer(f"Привет {telegram_user.first_name}", reply_markup=info_button)
+
