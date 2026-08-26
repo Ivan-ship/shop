@@ -13,7 +13,7 @@ class Users(Base):
     last_name: Mapped[str]=mapped_column(String(50))
     telegram_id: Mapped[int]=mapped_column(BigInteger)
 
-    purchases = Mapped[list["Purchases"]]=relationship(
+    purchases: Mapped[list["Purchases"]]=relationship(
         "Purchases", back_populates="user", 
         cascade="all, delete-orphan")
 
@@ -27,7 +27,7 @@ class Products(Base):
     file_name: Mapped[str]=mapped_column(String(100))
     is_active: Mapped[bool]=mapped_column(Boolean, default=False)
 
-    purchases = Mapped[list["Purchases"]]=relationship(
+    purchases: Mapped[list["Purchases"]]=relationship(
         "Purchases", back_populates="product", 
         cascade="all, delete-orphan")
     
@@ -39,12 +39,12 @@ class Purchases(Base):
     user_id: Mapped[int]=mapped_column(ForeignKey("users.user_id"))
     prod_id: Mapped[int]=mapped_column(ForeignKey("products.prod_id"))
 
-    user = Mapped["Users"]=relationship(
+    user: Mapped["Users"]=relationship(
         "Users",
         back_populates="purchases"
     )
 
-    product = Mapped["Products"]=relationship(
+    product: Mapped["Products"]=relationship(
         "Products",
         back_populates="purchases"
     )
