@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from server.database.db import async_session
 from sqlalchemy import select
-from server.database.shema import Products
+from server.repositories.get_prod import GetProduct
 
 router = APIRouter()
 
@@ -9,8 +9,10 @@ router = APIRouter()
 @router.get("/products")
 async def get_products():
     async with async_session() as session:
-        result = await session.execute(
-            select(Products).where(Products.is_active == True)
-        )
-        products = result.scalars().all()
+        repository = GetProduct(session)
+        products = await repository.get_prod()
         return products
+
+@router.post("/get/products")
+async def product_file():
+    pass
