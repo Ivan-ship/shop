@@ -5,8 +5,8 @@ from server.database.shema import Users
 from sqlalchemy import select
 from server.database.model import DownloadProduct
 from server.repositories.get_prod import GetProduct
+from server.repositories.purchases import Purchase
 from fastapi.responses import FileResponse
-from server.database.model import GetPurchases
 
 router = APIRouter()
 
@@ -50,7 +50,7 @@ async def product_file(prod_id: int, data: DownloadProduct):
                 detail="Файл не найден!"
             )
 
-        purcahase_repository = GetPurchases(session)
+        purcahase_repository = Purchase(session)
         purchase = await  purcahase_repository.create_purchase(user.user_id, prod_id)
 
         return FileResponse(

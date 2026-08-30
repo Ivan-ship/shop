@@ -71,7 +71,7 @@ async def get_product_pdf(callback: CallbackQuery):
 
             pdf_data = await response.read()
     
-    await callback.message.answer(
+    await callback.message.answer_document(
         document = BufferedInputFile(
             pdf_data,
             filename=f"product_{prod_id}.pdf"
