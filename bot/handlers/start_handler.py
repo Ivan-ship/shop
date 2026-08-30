@@ -48,5 +48,6 @@ async def start_bot(callback: CallbackQuery):
             json=data
         ) as response:
             res = await response.json()
+
     await callback.message.answer(f"Привет {telegram_user.first_name}", reply_markup=info_button)
 

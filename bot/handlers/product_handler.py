@@ -2,7 +2,12 @@ import os
 import aiohttp
 from dotenv import load_dotenv
 from aiogram import Router, F
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from aiogram.types import (
+    InlineKeyboardMarkup, 
+    InlineKeyboardButton, 
+    CallbackQuery,
+    BufferedInputFile
+)
 
 
 router = Router()
@@ -42,3 +47,33 @@ async def get_product(callback: CallbackQuery):
             text="Доступные товары",
             reply_markup=markup
         )
+
+@router.callback_query(F.data.startswith("product:"))
+async def get_product_pdf(callback: CallbackQuery):
+    await callback.answer()
+
+    prod_id = int(callback.data.split(":")[1])
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post(
+            f"{API_URL}/products/{prod_id}/download",
+            json={
+                "telegram_id": callback.from_user.id
+            }
+        ) as response:
+            if response.status != 200:
+                text = await response.text()
+
+                await callback.answer(
+                    "Не удалось получить файл!"
+                )
+                return
+
+            pdf_data = await response.read()
+    
+    await callback.message.answer(
+        document = BufferedInputFile(
+            pdf_data,
+            filename=f"product_{prod_id}.pdf"
+        )
+    )

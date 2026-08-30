@@ -5,3 +5,11 @@ class UserCreate(BaseModel):
     first_name: str
     last_name: str | None = None
     telegram_id: int
+
+
+class GetPurchases(BaseModel):
+    user_id: int
+    prod_id: int
+
+class DownloadProduct(BaseModel):
+    telegram_id: int
