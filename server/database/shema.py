@@ -16,6 +16,9 @@ class Users(Base):
     purchases: Mapped[list["Purchases"]]=relationship(
         "Purchases", back_populates="user", 
         cascade="all, delete-orphan")
+    payment: Mapped[list["Payment"]] = relationship(
+        "Payment", back_populates="user"
+    )
 
 
 class Products(Base):
@@ -30,7 +33,10 @@ class Products(Base):
     purchases: Mapped[list["Purchases"]]=relationship(
         "Purchases", back_populates="product", 
         cascade="all, delete-orphan")
-    
+
+    payment: Mapped[list["Payment"]] = relationship(
+        "Payment", back_populates="products"
+    )
 
 class Purchases(Base):
     __tablename__ ="purchases"
@@ -47,4 +53,23 @@ class Purchases(Base):
     product: Mapped["Products"]=relationship(
         "Products",
         back_populates="purchases"
+    )
+
+class Payment(Base):
+    __tablename__ = "payment"
+
+    payment_id: Mapped[int]=mapped_column(primary_key=True)
+    status: Mapped[str]=mapped_column(String(100), default="pending")
+    yookassa_payment_id: Mapped[str]=mapped_column(String(100), unique=True)
+    user_id: Mapped[int]=mapped_column(ForeignKey("users.user_id"))
+    prod_id: Mapped[int]=mapped_column(ForeignKey("products.prod_id"))
+
+    user: Mapped["Users"]=relationship(
+        "Users",
+        back_populates="payment"
+    )
+
+    product: Mapped["Products"]=relationship(
+        "Products",
+        back_populates="payment"
     )
