@@ -15,7 +15,7 @@ class GetProduct():
         result = await self.session.execute(
             select(Products).where(
                 Products.prod_id == prod_id,
-                Products.is_active == True
+                Products.is_active == True,
                 )
         )
         return result.scalar_one_or_none()

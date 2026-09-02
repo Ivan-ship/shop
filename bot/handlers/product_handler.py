@@ -56,7 +56,7 @@ async def get_product_pdf(callback: CallbackQuery):
 
     async with aiohttp.ClientSession() as session:
         async with session.post(
-            f"{API_URL}/products/{prod_id}/download",
+            f"{API_URL}/products/{prod_id}/payment",
             json={
                 "telegram_id": callback.from_user.id
             }
@@ -65,9 +65,24 @@ async def get_product_pdf(callback: CallbackQuery):
                 text = await response.text()
 
                 await callback.answer(
-                    "Не удалось получить файл!"
+                    "Не удалось создать платеж"
                 )
                 return
+
+            payment = await response.json()
+
+        payment_url = payment["payment_url"]
+
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="💳 Оплатить",
+                        url=payment_url
+                    )
+                ]
+            ]
+        )
 
             pdf_data = await response.read()
     

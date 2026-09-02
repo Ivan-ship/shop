@@ -35,7 +35,7 @@ class Products(Base):
         cascade="all, delete-orphan")
 
     payment: Mapped[list["Payment"]] = relationship(
-        "Payment", back_populates="products"
+        "Payment", back_populates="product"
     )
 
 class Purchases(Base):
